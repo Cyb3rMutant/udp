@@ -1,92 +1,85 @@
-# UDP
+# WebSocket Packet Decoder and Sender
 
+## Introduction
 
+The User Datagram Protocol (UDP) is a useful protocol in networking that is used alongside Transmission Control Protocol (TCP) as core members of the Internet Protocol (IP). Unlike TCP, UDP is a simple protocol that uses connectionless communication to send out requests to a server and can receive one or more responses. It employs a small-sized block, called a checksum, derived from the data being transmitted to track data integrity. Additional port numbers are utilized to address different functions at the server end since there is no explicit socket connection from the client to the server.
 
-## Getting started
+Previously, UDP was considered a less powerful alternative to TCP, which is useful for HTTP/2. However, with the development of the QUIC protocol and HTTP/3, which is based on UDP, it has gained renewed popularity. The key observation with QUIC was that modern webpages often have hundreds or thousands of referenced URLs to be loaded concurrently, and the failure-free nature of UDP at the IP layer means that one failing request does not block others.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This is a Python script for decoding and sending WebSocket packets using the `asyncio` and `websockets` libraries. It includes functions for decoding incoming packets and computing checksums for outgoing packets.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+---
 
-## Add your files
+## Requirements
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+This script requires Python 3.5 or later, as well as the `asyncio` and `websockets` libraries.
+
+To install these dependencies, run the following command:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.uwe.ac.uk/y2-abuhummos/udp.git
-git branch -M main
-git push -uf origin main
+pip install -r requirements
 ```
 
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.uwe.ac.uk/y2-abuhummos/udp/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+---
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+To use this script, you will need to be connected to the remote development machince at `csctcloud.uwe.ac.u` and have forwarded port number `5612` to localhost where UDP packets are transmitted and received.
+After that you can run it from the command line using:
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```
+python udp_server.py
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+The script will then connect to a WebSocket server on port `5612` and start sending and receiving packets.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+---
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Functions
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- ### `main() -> None`
 
-## License
-For open source projects, say how it is licensed.
+  This asynchronous function is the main entry point of the program. It first establishes a WebSocket connection with the server on port `5612` using the `websockets.connect()` method and receives and decodes the welcome message from the server. It then enters an infinite loop where it sends a packet containing the message "1111" to the server every second using the `send_packet` function, and receives and decodes packets from the server using the `recv_and_decode_packet` function that have the current time as the message.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- ### `recv_and_decode_packet(websocket: websockets.WebSocketClientProtocol) -> None`
+
+  This is an asynchronous function that takes a WebSocket connection as an argument and receives a packet from it in the form of a bytes string encoded in base64 then passes it to the `decode_udp_packet` function to be decoded to the user.
+
+  An example of a received packet is the welcome message when the server first starts as follows:
+
+  ```
+  b'CgAqACEAyztXZWxjb21lIHRvIElvVCBVRFAgU2VydmVy'
+  ```
+
+- ### `decode_udp_packet(packet: bytes) -> None`
+
+  This function takes a Base64-encoded bytes packet as input, decodes it using the `decodebytes` from the `base64` built in python module.
+
+  The decoded bytes string consists of 2 main parts:
+
+  - The header: it is made up of the first 8 bytes, and includes the source and destination ports, the length of the message and the checksum, with each being 2 bytes long
+  - The payload: the actual data that was sent in the message.
+
+  An example of a received packet is the welcome message when the server first starts as follows:
+
+  ```
+  b'\n\x00*\x00!\x00\xcb;Welcome to IoT UDP Server'
+  ```
+
+  The header is `b'\n\x00*\x00!\x00\xcb;'` and the payload is `b'Welcome to IoT UDP Server'`
+
+  The function first extracts the header part using the `unpack` function from the `struct` built in module by passing the format string `'<HHHH'` which specifies little endian using `<` and 4 unsigned shorts with `H` then starts printing out the integer values of the header in order and finally prints the payload in `utf-8` encoding.
+
+- ### `send_packet(websocket: websockets.WebSocketClientProtocol, source_port: int, dest_port: int, message: bytes) -> None`
+
+  This asynchronous function sends a UDP packet over the WebSocket connection. It takes the WebSocket connection, source port, destination port, and message as input. The function first calculates the checksum of the packet using the `compute_checksum` function, then creates the packet by concatenating the header fields using the `pack` function of the `struct` built in module as discussed before and then appends the payload to it. Then it encodes the packet using `base64`. Finally, it sends the encoded packet over the WebSocket connection.
+
+- ### `compute_checksum(source_port: int, dest_port: int, payload: bytes) -> int`
+
+  This function takes in the source port, destination port and payload message as arguments, the purpose of this function is to compute the checksum of a packet.
+
+The checksum is computed by first packing the source port, destination port, length of the payload plus 8 (the size of the header), and the payload into a binary packet using `struct.pack`. This binary packet is then processed by summing up the 16-bit words in the packet using one's complement addition. Specifically, the function iterates over the binary packet in steps of 2 bytes, converts each 2-byte segment to an integer using `int.from_bytes`, and adds the resulting integer to `total_sum`.
+
+After the summing is done, the function takes the one's complement of the total sum and then bitwise ANDs `&` it with `0xFFFF` to keep only the lowest 16 bits of the one's complement sum, discarding any higher bits that may be present because in python an integer could be bigger than 16-bits. This final value is then returned.
+
+The one's complement summing is used to detect errors in the packet transmission. The checksum computed at the sender side is sent along with the packet. The receiver recalculates the checksum using the same algorithm and compares it to the checksum sent with the packet. If the checksums do not match, the receiver knows that an error occurred during the transmission and the packet needs to be resent. 

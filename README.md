@@ -70,6 +70,20 @@ The script will then connect to a WebSocket server on port `5612` and start send
 
   The function first extracts the header part using the `unpack` function from the `struct` built in module by passing the format string `'<HHHH'` which specifies little endian using `<` and 4 unsigned shorts with `H` then starts printing out the integer values of the header in order and finally prints the payload in `utf-8` encoding.
 
+  The final output would look like this:
+  ```
+    --- DECODE ---
+    Base64: b'CgAqACEAyztXZWxjb21lIHRvIElvVCBVRFAgU2VydmVy'
+    Server Sent: b'\n\x00*\x00!\x00\xcb;Welcome to IoT UDP Server'
+    Decoded Packet:
+    Source Port: 10
+    Dest Port: 42
+    Data Length: 33
+    Checksum: 15307
+    Payload: Welcome to IoT UDP Server
+    --- END OF DECODE ---
+  ```
+
 - ### `send_packet(websocket: websockets.WebSocketClientProtocol, source_port: int, dest_port: int, message: bytes) -> None`
 
   This asynchronous function sends a UDP packet over the WebSocket connection. It takes the WebSocket connection, source port, destination port, and message as input. The function first calculates the checksum of the packet using the `compute_checksum` function, then creates the packet by concatenating the header fields using the `pack` function of the `struct` built in module as discussed before and then appends the payload to it. Then it encodes the packet using `base64`. Finally, it sends the encoded packet over the WebSocket connection.

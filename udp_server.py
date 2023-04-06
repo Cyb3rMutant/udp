@@ -7,7 +7,7 @@ import struct
 
 async def recv_and_decode_packet(websocket: websockets.WebSocketClientProtocol):
     message = await websocket.recv()
-    decode_udp_packet(message)
+    return decode_udp_packet(message)
 
 
 async def send_packet(websocket: websockets.WebSocketClientProtocol, source_port: int, dest_port: int, message: bytes):
@@ -33,6 +33,8 @@ def decode_udp_packet(packet: bytes):
     print('Checksum:', header[3])
     print("Payload:", payload)
     print("--- END OF DECODE ---\n")
+
+    return payload
 
 
 def compute_checksum(source_port: int, dest_port: int, payload: bytes):

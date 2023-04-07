@@ -41,9 +41,9 @@ The script will then connect to a WebSocket server on port `5612` and start send
 
   This asynchronous function is the main entry point of the program. It first establishes a WebSocket connection with the server on port `5612` using the `websockets.connect()` method and receives and decodes the welcome message from the server. It then enters an infinite loop where it sends a packet containing the message "1111" to the server every second using the `send_packet` function, and receives and decodes packets from the server using the `recv_and_decode_packet` function that have the current time as the message.
 
-- ### `recv_and_decode_packet(websocket: websockets.WebSocketClientProtocol) -> None`
+- ### `recv_and_decode_packet(websocket: websockets.WebSocketClientProtocol) -> str`
 
-  This is an asynchronous function that takes a WebSocket connection as an argument and receives a packet from it in the form of a bytes string encoded in base64 then passes it to the `decode_udp_packet` function to be decoded to the user.
+  This is an asynchronous function that takes a WebSocket connection as an argument and receives a packet from it in the form of a bytes string encoded in base64 then passes it to the `decode_udp_packet` function to be decoded to the user and returns the payload string.
 
   An example of a received packet is the welcome message when the server first starts as follows:
 
@@ -51,7 +51,7 @@ The script will then connect to a WebSocket server on port `5612` and start send
   b'CgAqACEAyztXZWxjb21lIHRvIElvVCBVRFAgU2VydmVy'
   ```
 
-- ### `decode_udp_packet(packet: bytes) -> None`
+- ### `decode_udp_packet(packet: bytes) -> str`
 
   This function takes a Base64-encoded bytes packet as input, decodes it using the `decodebytes` from the `base64` built in python module.
 
@@ -68,7 +68,7 @@ The script will then connect to a WebSocket server on port `5612` and start send
 
   The header is `b'\n\x00*\x00!\x00\xcb;'` and the payload is `b'Welcome to IoT UDP Server'`
 
-  The function first extracts the header part using the `unpack` function from the `struct` built in module by passing the format string `'<HHHH'` which specifies little endian using `<` and 4 unsigned shorts with `H` then starts printing out the integer values of the header in order and finally prints the payload in `utf-8` encoding.
+  The function first extracts the header part using the `unpack` function from the `struct` built in module by passing the format string `'<HHHH'` which specifies little endian using `<` and 4 unsigned shorts with `H` then starts printing out the integer values of the header in order and finally prints the payload in `utf-8` encoding and returns the payload string.
 
   The final output would look like this:
   ```
